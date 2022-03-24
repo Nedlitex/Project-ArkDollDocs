@@ -42,9 +42,11 @@ Where:
 
     This design allows AI to be more aggressive when in high HP and more defensive when in low HP.
 
-- `AT_Offset` is a value carried by each action. AI can specify a negative number for each `Offensive` action in order to prevent it from attacking forever. AI can also set a flag `at_offset_reset` to reset this. Note that `Idle` action always reset this sum.
+- `AT_Offset` is a value carried by each action. AI can specify a negative number for each `Offensive` action in order to prevent it from attacking forever.
 
 - `AT_Acc_Rate` is a value representing the change to `AT` per second. `T_Action` represents the time spent in the current action. This can be used as a soft timer to force AI to do some `Offensive` action once a while.
+
+- AI can also set a flag `at_reset` to reset the `AT` back to `AT_Base`.
 
 ### Action Priority
 
@@ -119,7 +121,7 @@ Table below defines the configurations available to the AI action.
 | anims | list\<`AI_ANIM`> | - | The animations that will be performed. | [] |
 | at_acc_rate | float | Any | The change to `AT` per second during this action. | 0 |
 | at_offset | float | Any | The change in `AT` after performing this action. | 0 |
-| at_offset_reset | bool | {true, false} | Whether this action resets the sum of `at_offset`. | false |
+| at_reset | bool | {true, false} | Whether this action resets `AT` to `at_base`. | false |
 | busy | bool | {true, false} | Whether the AI is in `Busy` state while performing the action. | false |
 | busy_time | list\<float> | [0, inf) | The minimum time in seconds that the AI is in `Busy` state while performing the action. **[1]** | [0] |
 | category | int | {0, 1, 2} | The category of the action, 0 = `Defensive`, 1 = `Offensive`, 2 = `Reactive`. | 0 |
@@ -139,6 +141,7 @@ Table below defines the configurations available to the AI action.
 | max_cnt | int | [0, inf) | The maximum amount of times this action can be performed. 0 means infinity. | 0 |
 | move_spd_scale | float | [0, inf) | The scale to move speed during this action. | 1 |
 | priority | int | Any | The priority of the action. Larger value means higher priority. **[7]** | 0 |
+| probability | float | [0, 1] | The probability that this action will be performed if its condition is satisfied. | 1 |
 | target_req | bool | {true, false} | Whether this action requires a target. | true |
 | ticket | bool | {true, false} | Whether this action uses ticketing system. | true |
 
