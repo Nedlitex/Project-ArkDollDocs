@@ -104,6 +104,7 @@ Table below defines the configuration available to AI animation.
 | - | - | - | - | - |
 act_id | string | - | The action id of the animation. Action ids are defined under `/Data/Actions`. | "" |
 combo_frame | int | [0, inf) | The frame number that AI should perform the next animation. 0 means at the end of the animation. | 0 |
+combo_gap | float | [0, inf) | The time in seconds the AI should wait before transition to next action. | 0 |
 
 
 Table below defines the configurations available to the AI action.
@@ -286,12 +287,10 @@ Note:
 
 9. To implement a `Intimidate` action that the AI will perform some preparing animation before attack that can be used by the player as a hint, [TODO]
 
-10. To implement a `Run&Hit` action, that the AI will first keep a distance to the target and then perform an attack,  [TODO]
+10. To implement a `Run&Hit` action, that the AI will first keep a distance to the target and then perform an attack, we can add an `Attack` action that has a `dist_req` and also set `dist_req_force` to true. This way AI will be always attempt to satisfy `dist_req` before perform the attack animation. We can further configure a `busy_time` to make sure AI does not move forever.
 
 11. To implement a `Flee` action, that the AI will keep moving to the lowest threat position, [TODO]
 
-12. To implement a `Counter` action, that the AI will react to the target's attacks with a counter-attack or block animation, [TODO]
+12. To implement a `Counter` action, that the AI will react to the target's attacks with a counter-attack or block animation, we can achieve this with two actions. First we can create a `Follow` action and have the AI play an alternative move/battle animation. And also give AI a `Reactive` action that listens for `in_enemy_active_atk_range` or `in_target_active_atk_range` event, and this action will perform the counter animation.
 
-13. To implement an AI that can `Fake`, such that the AI can perform a dummy attack animation and immediately turn to `Counter` if the target attacks,  [TODO]
-
-14. To implement a master like AI, that will `Flank` and try to `Counter` the1 player, [TODO]
+13. To implement an AI that can `Fake`, such that the AI can perform a dummy attack animation and immediately turn to `Counter` if the target attacks, or turn to `Attack` otherwise, we can achieve this with two actions. First we can create an `interruptable` `Fake` animation that performs the first half of the attack, note that this animation will not actually trigger the attack. And during this action we will increment `AT`. Also, we add a `Counter` action. Finally, we add an `Attack` action that continues from the fake attack, and gate this `Attack` action behind the `AT` accumulated by `Fake`. This way, if `Counter` fires during the `Fake`, AI will counter. If the `Fake` plays to the end, AI will turn to `Attack`.
