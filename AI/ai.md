@@ -133,6 +133,7 @@ Table below defines the configurations available to the AI action.
 | dist_req_force | bool | {true, false} | Whether AI satisfies `dist_req` before plays animation. **[2]** | false |
 | events | List\<List\<`string`>> | - | Set of events that this action depends on. **[3]** | [] |
 | flank | bool | {true, false} | Whether AI should flank. Note that enable this will also enable `ticket`. | false |
+| flee | bool | {true, false} | Whether AI should flee. |  false |
 | follow | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[4]** | [] |
 | hp_req | list\<float> | [0, 1] | The HP% of the AI required to perform this action. **[5]** | [0] |
 | hp_target_req | list\<float> | [0, 1] | The HP% of the target required to perform this action. **[6]** | [0] |
@@ -286,13 +287,13 @@ Note:
 
 7. Another way to implement `Ultimate` for the AI is to use the `charge` system. We can define a set of normal `Attack` or even other actions that increments the `charge`. And then define the `Ultimate` to be a higher `priority` `Attack` action that consumes a certain level of `charge`. This way, the AI will need to perform the normal actions to build up the `charge` before it can use the `Ultimate`. This approach ensures the AI will perform roughly the same prologue before the finale.
 
-8. To implement a `Rest` action, that the AI will perform some resting animation that can be used by the player as a weak point, [TODO]
+8. To implement a `Rest` action, that the AI will perform some resting animation that can be used by the player as a weak point, we can add a rest animation at the end of the `anims` of the `Attack` action.
 
-9. To implement a `Intimidate` action that the AI will perform some preparing animation before attack that can be used by the player as a hint, [TODO]
+9. To implement a `Intimidate` action that the AI will perform some preparing animation before attack that can be used by the player as a hint, we can add an intimidate animation at the beginning of the `anims` of the `Attack` action.
 
 10. To implement a `Run&Hit` action, that the AI will first keep a distance to the target and then perform an attack, we can add an `Attack` action that has a `dist_req` and also set `dist_req_force` to true. This way AI will be always attempt to satisfy `dist_req` before perform the attack animation. We can further configure a `busy_time` to make sure AI does not move forever.
 
-11. To implement a `Flee` action, that the AI will keep moving to the lowest threat position, [TODO]
+11. To implement a `Flee` action, that the AI will keep moving to the lowest threat position, we can create a `Reactive` action with `flee` set to true that listens for `on_hit` event and defines a `hp_req` so that the AI will only flee when get hit and the HP% drops below a certain level.
 
 12. To implement a `Counter` action, that the AI will react to the target's attacks with a counter-attack or block animation, we can achieve this with two actions. First we can create a `Follow` action and have the AI play an alternative move/battle animation. And also give AI a `Reactive` action that listens for `in_enemy_active_atk_range` or `in_target_active_atk_range` event, and this action will perform the counter animation.
 
