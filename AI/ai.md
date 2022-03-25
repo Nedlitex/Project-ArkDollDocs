@@ -24,7 +24,7 @@ The actions that AI can take has three categories: `Offensive`,  `Defensive` and
 
 Note that AI by default has an `Idle` action that is considered as a `Defensive` action.
 
-When determining which action to take, AI will always choose the `Reactive` action if the conditions met. Otherwise, AI will first determine the category of action to take. AI has an algorithm that computes its `Aggressive Tendency` (`AT`), and the AI will perform an `Offensive` action if `AT` >= `AT_Threshold`. Otherwise, AI will pick a `Defensive` action. Note that if there is no `Offensive` action programmed for the AI, then it will always default to use `Defensive` actions.
+When determining which action to take, AI will always choose the `Reactive` action if the conditions met. Otherwise, AI will first determine the category of action to take. AI has an algorithm that computes its `Aggressive Tendency` (`AT`), and the AI will perform an `Offensive` action if `AT` >= `offensive_threshold`. Otherwise, AI will pick a `Defensive` action. Note that if there is no `Offensive` action programmed for the AI, then it will always default to use `Defensive` actions.
 
 ### Aggressive Tendency
 
@@ -123,12 +123,12 @@ Table below defines the configurations available to the AI action.
 | at_offset | float | Any | The change in `AT` after performing this action. | 0 |
 | at_reset | bool | {true, false} | Whether this action resets `AT` to `at_base`. | false |
 | busy | bool | {true, false} | Whether the AI is in `Busy` state while performing the action. | false |
-| busy_time | list\<float> | [0, inf) | The minimum time in seconds that the AI is in `Busy` state while performing the action. **[1]** | [0] |
+| busy_time | list\<float> | [0, inf) | The minimum time in seconds that the AI is in `Busy` state while performing the action. **[1]** | [] |
 | category | int | {0, 1, 2} | The category of the action, 0 = `Defensive`, 1 = `Offensive`, 2 = `Reactive`. | 0 |
 | cd | float | [0, inf) | The cool down time in seconds of this action. | 0 |
 | cd_init | float | [0, inf) | The time in seconds since the AI spawns before this action can be performed. | 0 |
 | charge_offset | int | Any | The change in `charge` after performing this action. | 0 |
-| charge_req | int | [0, inf) | The minimum `charge` level required to perform this action. | 0 |
+| charge_req | int | Any | The minimum `charge` level required to perform this action. | 0 |
 | dist_req | list\<float> | [0, inf) | The range of distance required between the AI and the target to perform this action. **[2]** | [] |
 | dist_req_force | bool | {true, false} | Whether AI satisfies `dist_req` before plays animation. **[2]** | false |
 | events | List\<List\<`string`>> | - | Set of events that this action depends on. **[3]** | [] |
@@ -136,7 +136,7 @@ Table below defines the configurations available to the AI action.
 | flee | bool | {true, false} | Whether AI should flee. |  false |
 | follow | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[4]** | [] |
 | hp_req | list\<float> | [0, 1] | The HP% of the AI required to perform this action. **[5]** | [0] |
-| hp_target_req | list\<float> | [0, 1] | The HP% of the target required to perform this action. **[6]** | [0] |
+| hp_target_req | list\<float> | [0, 1] | The HP% of the target required to perform this action. **[6]** | [] |
 | interruptable | bool | {true, false} | Whether this action can be interrupted by `Reactive` action in `Busy` state. | false |
 | look_at_target | bool | {true, false} | Whether AI should look at the target during the action. | false |
 | max_cnt | int | [0, inf) | The maximum amount of times this action can be performed. 0 means infinity. | 0 |
@@ -248,9 +248,9 @@ actions | Dict\<string, List\<`AI_ACTION`>> | - | List of [Action Configurations
 at_base_high | float | Any | Base `AT` value if HP% >= `at_base_threshold`. | 1 |
 at_base_low | float | Any | Base `AT` value if HP% < `at_base_threshold`. | 0 |
 at_hp_threshold | float | [0,1] | The HP% threshold for the AI to pick between `at_base_high` or `at_base_low` as the base `AT` value. | 0 |
-at_threshold | float | Any | If `AT` >= `at_threshold`, AI picks an `Offensive` action, otherwise, AI picks a `Defensive` action. | 0 |
-atk_range_hint | float | [0, inf) | A hint of the AI's attack range. | 0 |
+atk_range_hint | Dict\<string, float> | [0, inf) | A hint of the AI's attack range by weapon. | {} |
 eval_rate | float | [0, inf) | The minimum time in seconds that the AI will re-evaluate the state. 0 means whenever possible. | 5 |
+offensive_threshold | float | Any | If `AT` >= `offensive_threshold`, AI picks an `Offensive` action, otherwise, AI picks a `Defensive` action. | 0 |
 vision | float | [0, inf) | The maximum distance between the AI and the target that will be considered. | 10 |
 
 Note:
