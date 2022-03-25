@@ -127,40 +127,42 @@ Table below defines the configurations available to the AI action.
 | category | int | {0, 1, 2} | The category of the action, 0 = `Defensive`, 1 = `Offensive`, 2 = `Reactive`. | 0 |
 | cd | float | [0, inf) | The cool down time in seconds of this action. | 0 |
 | cd_init | float | [0, inf) | The time in seconds since the AI spawns before this action can be performed. | 0 |
-| charge_offset | int | Any | The change in `charge` after performing this action. | 0 |
-| charge_req | int | Any | The minimum `charge` level required to perform this action. | 0 |
-| dist_req | list\<float> | [0, inf) | The range of distance required between the AI and the target to perform this action. **[2]** | [] |
-| dist_req_force | bool | {true, false} | Whether AI satisfies `dist_req` before plays animation. **[2]** | false |
-| events | List\<List\<`string`>> | - | Set of events that this action depends on. **[3]** | [] |
+| charge_offset | list\<int> | Any | The change in `charge` after performing this action. A negative value means the requirement of current charge as well, as the charge cannot go below 0. **[2]** | [] |
+| dist | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[3]** | [] |
+| dist_max_time | float | [0, inf) | The maximum time in seconds that the AI will try to satisfy `dist` before starting playing animation. 0 means infinity. **[3]** | 0 |
+| dist_req | list\<float> | [0, inf) | The range of distance required between the AI and the target to perform this action. **[4]** | [] |
+| events | List\<List\<`string`>> | - | Set of events that this action depends on. **[5]** | [] |
 | flank | bool | {true, false} | Whether AI should flank. Note that enable this will also enable `ticket`. | false |
 | flee | bool | {true, false} | Whether AI should flee. |  false |
-| follow | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[4]** | [] |
-| hp_req | list\<float> | [0, 1] | The HP% of the AI required to perform this action. **[5]** | [0] |
-| hp_target_req | list\<float> | [0, 1] | The HP% of the target required to perform this action. **[6]** | [] |
+| hp_req | list\<float> | [0, 1] | The HP% of the AI required to perform this action. **[6]** | [0] |
+| hp_target_req | list\<float> | [0, 1] | The HP% of the target required to perform this action. **[7]** | [] |
 | interruptable | bool | {true, false} | Whether this action can be interrupted by `Reactive` action in `Busy` state. | false |
-| look_at_target | bool | {true, false} | Whether AI should look at the target during the action. | false |
+| look_at_target | bool | {true, false} | Whether AI should look at the target during the action. Setting this to true also ensures the AI will face the target location when start playing animation. | false |
 | max_cnt | int | [0, inf) | The maximum amount of times this action can be performed. 0 means infinity. | 0 |
+| max_time | float | [0, inf) | The maximum time in seconds to spend in this action. 0 means infinity. | 0 |
 | move_spd_scale | float | [0, inf) | The scale to move speed during this action. | 1 |
-| priority | int | Any | The priority of the action. Larger value means higher priority. **[7]** | 0 |
+| priority | int | Any | The priority of the action. Larger value means higher priority. **[8]** | 0 |
 | probability | float | [0, 1] | The probability that this action will be performed if its condition is satisfied. | 1 |
 | target_req | bool | {true, false} | Whether this action requires a target. | true |
 | ticket | bool | {true, false} | Whether this action uses ticketing system. | true |
 
 Notes:
 
-**[1]** If the list has two values, the effective busy time of the action will be a random number in the range.
+**[1]** If the list has two values, the effective busy time of the action will be a random number in the range.  This is refreshed every time the action is performed.
 
-**[2]** If the list has one value, it represents the minimum distance between the AI and the target required for this action. If the list has two values, they represent a range of distance between the AI and the target required for this action. If `dist_req_force` is set to true, then `dist_req` is no longer treated as a condition of the action, but a prerequisite before AI performs the animation. In other words, AI will try to satisfy `dist_req` before play the animation if `dist_req_force` is true. If `dist_req_force` is set to true, additionally `busy_time` will be used as the maximum time that AI will try to satisfy `dist_req`.
+**[2]** If the list has two values, the charge offset of the action will be a random number in the range. This is refreshed every time the action is performed.
 
-**[3]** The inner list represents a set of events that are AND'd together. The outer list represents the OR of the inner lists. All the available event names are defined in [Event System](#event-system). Note that this configuration also supports adding a `!` in front of the event name to represent requiring the event not set. E.g. "in_enemy_atk_range" represents the action requires event `in_enemy_atk_range` to be set, while "!in_enemy_atk_range" represents the action requires event `in_enemy_atk_range` to be not set.
+**[3]** If the list is empty, then there is no distance. If the list has one value, it represents the minimum distance that the AI will try to keep with the target. If the list has two values, they represents the minimum and maximum distance that the AI will keep with the target. Note that if there is a valid follow distance, AI will first ensure this is satisfied before play any animation. If a non-zero `dist_max_time` is set, AI will at most spend this amount of time trying to satisfy `dist` before starting playing animation. Note that this is only applicable if the action has any animation.
 
-**[4]** Note that this is only applicable when the action has no animation. If the list is empty, then there is no follow distance. If the list has one value, it represents the minimum distance that the AI will try to keep with the target. If the list has two values, they represents the minimum and maximum distance that the AI will keep with the target.
+**[4]** If the list has one value, it represents the minimum distance between the AI and the target required for this action. If the list has two values, they represent a range of distance between the AI and the target required for this action.
 
-**[5]** If the list has one value, it represents the minimum HP% required for this action. If the list has two values, they represent a range of the HP% required for this action.
+**[5]** The inner list represents a set of events that are AND'd together. The outer list represents the OR of the inner lists. All the available event names are defined in [Event System](#event-system). Note that this configuration also supports adding a `!` in front of the event name to represent requiring the event not set. E.g. "in_enemy_atk_range" represents the action requires event `in_enemy_atk_range` to be set, while "!in_enemy_atk_range" represents the action requires event `in_enemy_atk_range` to be not set.
 
-**[6]** If the list has one value, it represents the minimum target HP% required for this action. If the list has two values, they represent a range of the target HP% required for this action.
+**[6]** If the list has one value, it represents the minimum HP% required for this action. If the list has two values, they represent a range of the HP% required for this action.
 
-**[7]** This parameter is used to pick an action when multiple actions' conditions are satisfied. Refer to [Action Priority](#action-priority) section for more information.
+**[7]** If the list has one value, it represents the minimum target HP% required for this action. If the list has two values, they represent a range of the target HP% required for this action.
+
+**[8]** This parameter is used to pick an action when multiple actions' conditions are satisfied. Refer to [Action Priority](#action-priority) section for more information.
 
 ---
 
@@ -249,6 +251,7 @@ at_base_high | float | Any | Base `AT` value if HP% >= `at_base_threshold`. | 1 
 at_base_low | float | Any | Base `AT` value if HP% < `at_base_threshold`. | 0 |
 at_hp_threshold | float | [0,1] | The HP% threshold for the AI to pick between `at_base_high` or `at_base_low` as the base `AT` value. | 0 |
 atk_range_hint | Dict\<string, float> | [0, inf) | A hint of the AI's attack range by weapon. | {} |
+charge_init | list\<int> | [0, inf) | The initial charge value. **[2]** | [] |
 eval_rate | float | [0, inf) | The minimum time in seconds that the AI will re-evaluate the state. 0 means whenever possible. | 5 |
 offensive_threshold | float | Any | If `AT` >= `offensive_threshold`, AI picks an `Offensive` action, otherwise, AI picks a `Defensive` action. | 0 |
 vision | float | [0, inf) | The maximum distance between the AI and the target that will be considered. | 10 |
@@ -269,13 +272,15 @@ Note:
 
     This is the 'dual-wield-weapon' category. Refer to `/Data/Actions/act_dw_*.json`.
 
+**[2]** If the list has two values, the initial charge of the AI will be a random number in the range.
+
 ---
 
 ## AI Examples
 
 1. To implement the simplest AI, that only knows to attack its target, we can configure the `AT_Base` of the AI to be 1 all the time, and only implement an `Attack` action that does not modify `AT`.
 
-2. To implement a `Follow` action, that the AI will try to keep a distance to the target, we can simply give AI a `Defensive` action with a `follow` parameter. Without any animation (empty `anims`), AI will just by default keep the distance to the target. We can also change the `alt_move` and `alt_battle` parameter to have the AI play a different animation. In addition, we can set `look_at_target` to true so the AI will always face the target while moving.
+2. To implement a `Follow` action, that the AI will try to keep a distance to the target, we can simply give AI a `Defensive` action with a `dist` parameter. Without any animation (empty `anims`), AI will just by default keep the distance to the target. We can also change the `alt_move` and `alt_battle` parameter to have the AI play a different animation. In addition, we can set `look_at_target` to true so the AI will always face the target while moving.
 
 3. To implement a `Flank` action, that is a slightly advanced `Follow` as the AI will try to move around the target, we can simply adapt the `Follow` action by setting `flank` parameter to true.
 
