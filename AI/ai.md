@@ -138,6 +138,7 @@ Table below defines the configurations available to the AI action.
 | hp_target_req | list\<float> | [0, 1] | The HP% of the target required to perform this action. **[7]** | [] |
 | interruptable | bool | {true, false} | Whether this action can be interrupted by `Reactive` action in `Busy` state. | false |
 | look_at_target | bool | {true, false} | Whether AI should look at the target during the action. Setting this to true also ensures the AI will face the target location when start playing animation. | false |
+| look_at_target_move | bool | {true, false} | Whether AI should look at the target when moving. | false |
 | max_cnt | int | [0, inf) | The maximum amount of times this action can be performed. 0 means infinity. | 0 |
 | max_time | float | [0, inf) | The maximum time in seconds to spend in this action. 0 means infinity. | 0 |
 | move_spd_scale | float | [0, inf) | The scale to move speed during this action. | 1 |
@@ -280,7 +281,7 @@ Note:
 
 1. To implement the simplest AI, that only knows to attack its target, we can configure the `AT_Base` of the AI to be 1 all the time, and only implement an `Attack` action that does not modify `AT`.
 
-2. To implement a `Follow` action, that the AI will try to keep a distance to the target, we can simply give AI a `Defensive` action with a `dist` parameter. Without any animation (empty `anims`), AI will just by default keep the distance to the target. We can also change the `alt_move` and `alt_battle` parameter to have the AI play a different animation. In addition, we can set `look_at_target` to true so the AI will always face the target while moving.
+2. To implement a `Follow` action, that the AI will try to keep a distance to the target, we can simply give AI a `Defensive` action with a `dist` parameter. Without any animation (empty `anims`), AI will just by default keep the distance to the target. We can also change the `alt_move` and `alt_battle` parameter to have the AI play a different animation. In addition, we can set `look_at_target_move` to true so the AI will always face the target while moving.
 
 3. To implement a `Flank` action, that is a slightly advanced `Follow` as the AI will try to move around the target, we can simply adapt the `Follow` action by setting `flank` parameter to true.
 
