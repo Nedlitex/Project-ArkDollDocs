@@ -107,6 +107,7 @@ Table below defines the configuration available to AI animation.
 act_id | string | - | The action id of the animation. Action ids are defined under `/Data/Actions`. | "" |
 combo_frame | int | [0, inf) | The frame number that AI should perform the next animation. 0 means at the end of the animation. | 0 |
 combo_gap | float | [0, inf) | The time in seconds the AI should wait before transition to next action. | 0 |
+dist_max_time_override | float | [0, inf) | The maximum time in seconds that the AI will try to satisfy `dist` before starting playing animation. 0 means infinity. | 0 |
 dist_override | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[1]** | [] |
 
 Notes:
