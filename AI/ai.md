@@ -134,6 +134,7 @@ Table below defines the configurations available to the AI action.
 | cd | float | [0, inf) | The cool down time in seconds of this action. | 0 |
 | cd_init | float | [0, inf) | The time in seconds since the AI spawns before this action can be performed. | 0 |
 | charge_offset | list\<int> | Any | The change in `charge` after performing this action. A negative value means the requirement of current charge as well, as the charge cannot go below 0. **[3]** | [] |
+| charge_reset | bool | {true, false} | Whether this action resets `charge` to 0. | false |
 | dist | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[4]** | [] |
 | dist_max_time | float | [0, inf) | The maximum time in seconds that the AI will try to satisfy `dist` before starting playing animation. 0 means infinity. **[5]** | 0 |
 | dist_req | list\<float> | [0, inf) | The range of distance required between the AI and the target to perform this action. **[6]** | [] |
