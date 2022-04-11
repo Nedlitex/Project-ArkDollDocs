@@ -112,28 +112,25 @@ dist_override | list\<float> | [0, inf) | The range of distance AI will keep wit
 
 Notes:
 
-**[1]** If the list has two values, the charge offset of the action will be a random number in the range. This is refreshed every time the action is performed.
+**[1]** If the list has two values, the value of will be a random number in the range. This is refreshed every time the action is performed.
 
 Table below defines the configurations available to modify a value over time and based on other events.
 
 `VAL_CONFIG`
 | Key | Type | Range | Description | Default |
 | - | - | - | - | - |
-acc_init_rate1 | bool | {true, false} | Whether initialized to use `acc_rate1`. | true |
-acc_rate1 | list\<float> | Any | The change to the value per second when value < `acc_rate_threshold1`. **[1]** | [0] |
-acc_rate2 | list\<float> | Any | The change to the value per second when value > `acc_rate_threshold2`. **[1]** | [0] |
-acc_rate_threshold1 | float | Any | The value threshold to change from `acc_rate1` to `acc_rate2`. | 0 |
-acc_rate_threshold2 | float | Any | The value threshold to change from `acc_rate2` to `acc_rate1`. | 0 |
-acc_per_act | float | Any | The change to value per each invocation of the action. Only applicable when used in `AT_ACTION`. | 0 |
-acc_per_hp_lost | float | Any | The change to value per each percent of the HP lost. | 0 |
-base | list\<float> | Any | The initial value. **[2]** | [0] |
+acc_rate | list\<float> | Any | The change to the value per second. **[1]** | [0] |
+acc_base | list\<float> | Any | The change to value per each invocation. **[1]** | [0] |
+acc_per_hp_lost | list\<float> | Any | The change to value per each percent of the HP lost. **[1]** | [0] |
+overwrite | bool | {true, false} | Whether this configuration should disable the same configuration defined in `AI_STATS`. | false |
 reset | bool | {true, false} | Whether the value is reset on invocation. Only applicable when used in `AT_ACTION`. | false |
+value_range | list\<float> | Any | The range that this configuration can modify the value to. **[2]** | [] |
 
 Note:
 
-**[1]** If the list has two values, the `acc_rate[1/2]` of will be a random number in the range. This is refreshed every time the `acc_rate[1/2]` is applied.
+**[1]** If the list has two values, the value of will be a random number in the range.
 
-**[2]** If the list has two values, the `base` of will be a random number in the range.
+**[2]** If the list has one value, it represents the minimum value. If the list has two values, they represent a range.
 
 Table below defines the configurations available to the AI action.
 
@@ -146,49 +143,52 @@ Table below defines the configurations available to the AI action.
 | alt_move | int | [0, inf) | The alternative move animation variance. 0 means default. All variances are defined inside `/Data/AnimationSheets/anim_arkdoll.json`| 0 |
 | anims | list\<`AI_ANIM`> | - | The animations that will be performed. | [] |
 | at_acc | `VAL_CONFIG` | - | The change to `AT`. | see `VAL_CONFIG` |
+| at_req | list\<float> | Any | The `AT` requirement. **[1]** | [] |
 | busy | bool | {true, false} | Whether the AI is in `Busy` state while performing the action. | false |
-| busy_time | list\<float> | [0, inf) | The minimum time in seconds that the AI is in `Busy` state while performing the action. **[1]** | [] |
+| busy_time | list\<float> | [0, inf) | The minimum time in seconds that the AI is in `Busy` state while performing the action. **[2]** | [] |
 | category | int | {0, 1, 2} | The category of the action, 0 = `Defensive`, 1 = `Offensive`, 2 = `Reactive`. | 0 |
 | cd | float | [0, inf) | The cool down time in seconds of this action. | 0 |
 | cd_init | float | [0, inf) | The time in seconds since the AI spawns before this action can be performed. | 0 |
 | charge_acc | `VAL_CONFIG` | - | The change to `charge`. | see `VAL_CONFIG` |
-| charge_req | list\<int> | Any | The `charge` requirement. **[2]** | [] |
-| dist | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[3]** | [] |
-| dist_max_time | float | [0, inf) | The maximum time in seconds that the AI will try to satisfy `dist` before starting playing animation. 0 means infinity. **[3]** | 0 |
-| dist_req | list\<float> | [0, inf) | The range of distance required between the AI and the target to perform this action. **[4]** | [] |
-| events | List\<List\<`string`>> | - | Set of events that this action depends on. **[5]** | [] |
+| charge_req | list\<int> | Any | The `charge` requirement. **[3]** | [] |
+| dist | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[4]** | [] |
+| dist_max_time | float | [0, inf) | The maximum time in seconds that the AI will try to satisfy `dist` before starting playing animation. 0 means infinity. **[4]** | 0 |
+| dist_req | list\<float> | [0, inf) | The range of distance required between the AI and the target to perform this action. **[5]** | [] |
+| events | List\<List\<`string`>> | - | Set of events that this action depends on. **[6]** | [] |
 | flank | bool | {true, false} | Whether AI should flank. Note that enable this will also enable `ticket`. | false |
 | flee | bool | {true, false} | Whether AI should flee. |  false |
-| hp_req | list\<float> | [0, 1] | The HP% of the AI required to perform this action. **[6]** | [0] |
-| hp_target_req | list\<float> | [0, 1] | The HP% of the target required to perform this action. **[7]** | [] |
+| hp_req | list\<float> | [0, 1] | The HP% of the AI required to perform this action. **[7]** | [0] |
+| hp_target_req | list\<float> | [0, 1] | The HP% of the target required to perform this action. **[8]** | [] |
 | interruptable | bool | {true, false} | Whether this action can be interrupted by `Reactive` action in `Busy` state. | false |
 | look_at_target | bool | {true, false} | Whether AI should look at the target during the action. Setting this to true also ensures the AI will face the target location when start playing animation. | false |
 | look_at_target_move | bool | {true, false} | Whether AI should look at the target when moving. | false |
 | max_cnt | int | [0, inf) | The maximum amount of times this action can be performed. 0 means infinity. | 0 |
 | max_time | float | [0, inf) | The maximum time in seconds to spend in this action. 0 means infinity. | 0 |
 | move_spd_scale | float | [0, inf) | The scale to move speed during this action. | 1 |
-| priority | int | Any | The priority of the action. Larger value means higher priority. **[8]** | 0 |
+| priority | int | Any | The priority of the action. Larger value means higher priority. **[9]** | 0 |
 | probability | float | [0, 1] | The probability that this action will be performed if its condition is satisfied. | 1 |
 | target_req | bool | {true, false} | Whether this action requires a target. | true |
 | ticket | bool | {true, false} | Whether this action uses ticketing system. | true |
 
 Notes:
 
-**[1]** If the list has two values, the effective busy time of the action will be a random number in the range.  This is refreshed every time the action is performed.
+**[1]** If the list has one value, it represents the minimum `AT` required for this action. If the list has two values, they represent a range of the `AT` required for this action.
 
-**[2]** If the list has one value, it represents the minimum `charge` required for this action. If the list has two values, they represent a range of the `charge` required for this action.
+**[2]** If the list has two values, the effective busy time of the action will be a random number in the range.  This is refreshed every time the action is performed.
 
-**[3]** If the list is empty, then there is no distance. If the list has one value, it represents the minimum distance that the AI will try to keep with the target. If the list has two values, they represents the minimum and maximum distance that the AI will keep with the target. Note that if there is a valid follow distance, AI will first ensure this is satisfied before play any animation. If a non-zero `dist_max_time` is set, AI will at most spend this amount of time trying to satisfy `dist` before starting playing animation. Note that this is only applicable if the action has any animation.
+**[3]** If the list has one value, it represents the minimum `charge` required for this action. If the list has two values, they represent a range of the `charge` required for this action.
 
-**[4]** If the list has one value, it represents the minimum distance between the AI and the target required for this action. If the list has two values, they represent a range of distance between the AI and the target required for this action.
+**[4]** If the list is empty, then there is no distance. If the list has one value, it represents the minimum distance that the AI will try to keep with the target. If the list has two values, they represents the minimum and maximum distance that the AI will keep with the target. Note that if there is a valid follow distance, AI will first ensure this is satisfied before play any animation. If a non-zero `dist_max_time` is set, AI will at most spend this amount of time trying to satisfy `dist` before starting playing animation. Note that this is only applicable if the action has any animation.
 
-**[5]** The inner list represents a set of events that are AND'd together. The outer list represents the OR of the inner lists. All the available event names are defined in [Event System](#event-system). Note that this configuration also supports adding a `!` in front of the event name to represent requiring the event not set. E.g. "in_enemy_atk_range" represents the action requires event `in_enemy_atk_range` to be set, while "!in_enemy_atk_range" represents the action requires event `in_enemy_atk_range` to be not set.
+**[5]** If the list has one value, it represents the minimum distance between the AI and the target required for this action. If the list has two values, they represent a range of distance between the AI and the target required for this action.
 
-**[6]** If the list has one value, it represents the minimum HP% required for this action. If the list has two values, they represent a range of the HP% required for this action.
+**[6]** The inner list represents a set of events that are AND'd together. The outer list represents the OR of the inner lists. All the available event names are defined in [Event System](#event-system). Note that this configuration also supports adding a `!` in front of the event name to represent requiring the event not set. E.g. "in_enemy_atk_range" represents the action requires event `in_enemy_atk_range` to be set, while "!in_enemy_atk_range" represents the action requires event `in_enemy_atk_range` to be not set.
 
-**[7]** If the list has one value, it represents the minimum target HP% required for this action. If the list has two values, they represent a range of the target HP% required for this action.
+**[7]** If the list has one value, it represents the minimum HP% required for this action. If the list has two values, they represent a range of the HP% required for this action.
 
-**[8]** This parameter is used to pick an action when multiple actions' conditions are satisfied. Refer to [Action Priority](#action-priority) section for more information.
+**[8]** If the list has one value, it represents the minimum target HP% required for this action. If the list has two values, they represent a range of the target HP% required for this action.
+
+**[9]** This parameter is used to pick an action when multiple actions' conditions are satisfied. Refer to [Action Priority](#action-priority) section for more information.
 
 ---
 
@@ -284,6 +284,7 @@ offensive_threshold | float | Any | If `AT` >= `offensive_threshold`, AI turns t
 actions | dict\<string, List\<`AI_ACTION`>> | - | List of [Action Configurations](#action-configuration) by `Weapon` category. **[1]** | {} |
 ai_stats | list\<`AT_STATS`> | - | List of `AI_STATS` based on HP%. | [] |
 atk_range_hint | dict\<string, float> | [0, inf) | A hint of the AI's attack range by weapon. | {} |
+charge_max | int | [0, inf） | Maximum charge value. 0 means infinity. | 0 |
 eval_rate | float | [0, inf) | The minimum time in seconds that the AI will re-evaluate the state. 0 means whenever possible. | 5 |
 vision | float | [0, inf) | The maximum distance between the AI and the target that will be considered. | 10 |
 
