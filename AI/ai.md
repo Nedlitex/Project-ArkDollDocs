@@ -151,21 +151,23 @@ Table below defines the configurations available to the AI action.
 | cd_init | float | [0, inf) | The time in seconds since the AI spawns before this action can be performed. | 0 |
 | charge_acc | `VAL_CONFIG` | - | The change to `charge`. | see `VAL_CONFIG` |
 | charge_req | list\<int> | Any | The `charge` requirement. **[3]** | [] |
-| dist | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[4]** | [] |
-| dist_max_time | float | [0, inf) | The maximum time in seconds that the AI will try to satisfy `dist` before starting playing animation. 0 means infinity. **[4]** | 0 |
-| dist_req | list\<float> | [0, inf) | The range of distance required between the AI and the target to perform this action. **[5]** | [] |
-| events | List\<List\<`string`>> | - | Set of events that this action depends on. **[6]** | [] |
+| custom_val | dict\<string, `VAL_CONFIG`> | - | Custom values that this action modifies. All values are referenced by name and are global. | {} |
+| custom_val_req | dict\<string, list\<float>> | - | Custom values that this action requires. **[4]** | {} |
+| dist | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[5]** | [] |
+| dist_max_time | float | [0, inf) | The maximum time in seconds that the AI will try to satisfy `dist` before starting playing animation. 0 means infinity. **[5]** | 0 |
+| dist_req | list\<float> | [0, inf) | The range of distance required between the AI and the target to perform this action. **[6]** | [] |
+| events | List\<List\<`string`>> | - | Set of events that this action depends on. **[7]** | [] |
 | flank | bool | {true, false} | Whether AI should flank. Note that enable this will also enable `ticket`. | false |
 | flee | bool | {true, false} | Whether AI should flee. |  false |
-| hp_req | list\<float> | [0, 1] | The HP% of the AI required to perform this action. **[7]** | [0] |
-| hp_target_req | list\<float> | [0, 1] | The HP% of the target required to perform this action. **[8]** | [] |
+| hp_req | list\<float> | [0, 1] | The HP% of the AI required to perform this action. **[8]** | [0] |
+| hp_target_req | list\<float> | [0, 1] | The HP% of the target required to perform this action. **[9]** | [] |
 | interruptable | bool | {true, false} | Whether this action can be interrupted by `Reactive` action in `Busy` state. | false |
 | look_at_target | bool | {true, false} | Whether AI should look at the target during the action. Setting this to true also ensures the AI will face the target location when start playing animation. | false |
 | look_at_target_move | bool | {true, false} | Whether AI should look at the target when moving. | false |
 | max_cnt | int | [0, inf) | The maximum amount of times this action can be performed. 0 means infinity. | 0 |
 | max_time | float | [0, inf) | The maximum time in seconds to spend in this action. 0 means infinity. | 0 |
 | move_spd_scale | float | [0, inf) | The scale to move speed during this action. | 1 |
-| priority | int | Any | The priority of the action. Larger value means higher priority. **[9]** | 0 |
+| priority | int | Any | The priority of the action. Larger value means higher priority. **[10]** | 0 |
 | probability | float | [0, 1] | The probability that this action will be performed if its condition is satisfied. | 1 |
 | target_req | bool | {true, false} | Whether this action requires a target. | true |
 | ticket | bool | {true, false} | Whether this action uses ticketing system. | true |
@@ -178,17 +180,19 @@ Notes:
 
 **[3]** If the list has one value, it represents the minimum `charge` required for this action. If the list has two values, they represent a range of the `charge` required for this action.
 
-**[4]** If the list is empty, then there is no distance. If the list has one value, it represents the minimum distance that the AI will try to keep with the target. If the list has two values, they represents the minimum and maximum distance that the AI will keep with the target. Note that if there is a valid follow distance, AI will first ensure this is satisfied before play any animation. If a non-zero `dist_max_time` is set, AI will at most spend this amount of time trying to satisfy `dist` before starting playing animation. Note that this is only applicable if the action has any animation.
+**[4]** If the list has one value, it represents the minimum custom value required for this action. If the list has two values, they represent a range of the custom value required for this action.
 
-**[5]** If the list has one value, it represents the minimum distance between the AI and the target required for this action. If the list has two values, they represent a range of distance between the AI and the target required for this action.
+**[5]** If the list is empty, then there is no distance. If the list has one value, it represents the minimum distance that the AI will try to keep with the target. If the list has two values, they represents the minimum and maximum distance that the AI will keep with the target. Note that if there is a valid follow distance, AI will first ensure this is satisfied before play any animation. If a non-zero `dist_max_time` is set, AI will at most spend this amount of time trying to satisfy `dist` before starting playing animation. Note that this is only applicable if the action has any animation.
 
-**[6]** The inner list represents a set of events that are AND'd together. The outer list represents the OR of the inner lists. All the available event names are defined in [Event System](#event-system). Note that this configuration also supports adding a `!` in front of the event name to represent requiring the event not set. E.g. "in_enemy_atk_range" represents the action requires event `in_enemy_atk_range` to be set, while "!in_enemy_atk_range" represents the action requires event `in_enemy_atk_range` to be not set.
+**[6]** If the list has one value, it represents the minimum distance between the AI and the target required for this action. If the list has two values, they represent a range of distance between the AI and the target required for this action.
 
-**[7]** If the list has one value, it represents the minimum HP% required for this action. If the list has two values, they represent a range of the HP% required for this action.
+**[7]** The inner list represents a set of events that are AND'd together. The outer list represents the OR of the inner lists. All the available event names are defined in [Event System](#event-system). Note that this configuration also supports adding a `!` in front of the event name to represent requiring the event not set. E.g. "in_enemy_atk_range" represents the action requires event `in_enemy_atk_range` to be set, while "!in_enemy_atk_range" represents the action requires event `in_enemy_atk_range` to be not set.
 
-**[8]** If the list has one value, it represents the minimum target HP% required for this action. If the list has two values, they represent a range of the target HP% required for this action.
+**[8]** If the list has one value, it represents the minimum HP% required for this action. If the list has two values, they represent a range of the HP% required for this action.
 
-**[9]** This parameter is used to pick an action when multiple actions' conditions are satisfied. Refer to [Action Priority](#action-priority) section for more information.
+**[9]** If the list has one value, it represents the minimum target HP% required for this action. If the list has two values, they represent a range of the target HP% required for this action.
+
+**[10]** This parameter is used to pick an action when multiple actions' conditions are satisfied. Refer to [Action Priority](#action-priority) section for more information.
 
 ---
 
@@ -274,6 +278,7 @@ configuration.
 ai_stats_hp_threshold | float | [0, 1] | AI picks this stats if HP% >= `ai_stats_hp_threshold`, the larger `ai_stats_hp_threshold` is checked first. | 0 |
 at_acc | `VAL_CONFIG` | - | The change to `AT`. | see `VAL_CONFIG` |
 charge_acc | `VAL_CONFIG` | - | The change to `charge`. | see `VAL_CONFIG` |
+custom_val | dict\<string, `VAL_CONFIG`> | - | Custom values. All values are referenced by name and are global. | {} |
 defensive_threshold | float | Any | If `AT` <= `defensive_threshold`, AI turns to defensive mode. | 0 |
 offensive_threshold | float | Any | If `AT` >= `offensive_threshold`, AI turns to offensive mode. | 0 |
 
