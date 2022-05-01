@@ -105,14 +105,17 @@ Table below defines the configuration available to AI animation.
 | Key | Type | Range | Description | Default |
 | - | - | - | - | - |
 act_id | string | - | The action id of the animation. Action ids are defined under `/Data/Actions`. | "" |
+aim_frames | list\<list\<int>>| [0, inf) | The frames that AI will adjust to face the target. **[1]** | [] |
 combo_frame | int | [0, inf) | The frame number that AI should perform the next animation. 0 means at the end of the animation. | 0 |
 combo_gap | float | [0, inf) | The time in seconds the AI should wait before transition to next action. | 0 |
 dist_max_time_override | float | [0, inf) | The maximum time in seconds that the AI will try to satisfy `dist` before starting playing animation. 0 means infinity. | 0 |
-dist_override | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[1]** | [] |
+dist_override | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[2]** | [] |
 
 Notes:
 
-**[1]** If the list has two values, the value of will be a random number in the range. This is refreshed every time the action is performed.
+**[1]** If the inner list has one value, this will be the single frame that AI adjusts to face the target. If the inner list has two values, this will be the range of frames that AI adjusts to face the target.
+
+**[2]** If the list has two values, the value of will be a random number in the range. This is refreshed every time the action is performed.
 
 Table below defines the configurations available to modify a value over time and based on other events.
 
