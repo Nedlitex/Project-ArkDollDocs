@@ -157,6 +157,7 @@ Table below defines the configurations available to the AI action.
 | custom_val | dict\<string, `VAL_CONFIG`> | - | Custom values that this action modifies. All values are referenced by name and are global. | {} |
 | custom_val_req | dict\<string, list\<float>> | - | Custom values that this action requires. **[4]** | {} |
 | dist | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[5]** | [] |
+| dist_only | bool | {true, false} | The action only moves, AI will stop when reach the distance requirement. | false |
 | dist_max_time | float | [0, inf) | The maximum time in seconds that the AI will try to satisfy `dist` before starting playing animation. 0 means infinity. **[5]** | 0 |
 | dist_req | list\<float> | [0, inf) | The range of distance required between the AI and the target to perform this action. **[6]** | [] |
 | events | List\<List\<`string`>> | - | Set of events that this action depends on. **[7]** | [] |
@@ -170,6 +171,7 @@ Table below defines the configurations available to the AI action.
 | max_cnt | int | [0, inf) | The maximum amount of times this action can be performed. 0 means infinity. | 0 |
 | max_time | float | [0, inf) | The maximum time in seconds to spend in this action. 0 means infinity. | 0 |
 | move_spd_scale | float | [0, inf) | The scale to move speed during this action. | 1 |
+| move_dir_override | string | - | Override the direction of the move. | "" |
 | priority | int | Any | The priority of the action. Larger value means higher priority. **[10]** | 0 |
 | probability | float | [0, 1] | The probability that this action will be performed if its condition is satisfied. | 1 |
 | target_req | bool | {true, false} | Whether this action requires a target. | true |
