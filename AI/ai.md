@@ -110,6 +110,7 @@ combo_frame | int | [0, inf) | The frame number that AI should perform the next 
 combo_gap | float | [0, inf) | The time in seconds the AI should wait before transition to next action. | 0 |
 dist_max_time_override | float | [0, inf) | The maximum time in seconds that the AI will try to satisfy `dist` before starting playing animation. 0 means infinity. | 0 |
 dist_override | list\<float> | [0, inf) | The range of distance AI will keep with the target. **[2]** | [] |
+dir_override | string | - | Override the direction of the animation. | "" |
 
 Notes:
 
